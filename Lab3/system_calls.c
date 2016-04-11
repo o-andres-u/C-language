@@ -1,0 +1,21 @@
+#include <syscall.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/types.h>
+
+int main(void) {
+  long ID1, ID2;
+  /*----------------------------*/
+  /* direct system call         */
+  /* SYS_getpid(func no. is 20) */
+  /*----------------------------*/
+  ID1 = syscall(SYS_getpid);
+  printf("syscall(SYS_getpid)=%1d\n", ID1);
+  /*----------------------------*/
+  /* "libc" wrapped system call */
+  /* SYS_getpid(func no. is 20) */
+  /*----------------------------*/
+  ID2 = getpid();
+  printf("getpid()=%1d\n", ID2);
+  return (0);
+}
