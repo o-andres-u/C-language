@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <wait.h>
 
 int main() {
   int i;
@@ -15,8 +16,12 @@ int main() {
       return -1;
     } else if (pid == 0) {
       printf("Soy el hijo #%d con PID: %d\n", i+1, getpid());
-      sleep(5);
+      printf("Saliending...\n");
+      exit(0);
     }
   }
+
+  while(wait(NULL) > 0);
+
   return 0;
 }
