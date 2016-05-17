@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <semaphore.h>
 
 #define NUMTHREADS 200
 #define MAXCNT 1000
 
 /* Global variables - shared between threads */
 double counter = 0;
-pthread_mutex_t lock;
+sem_t sem;
 
 /* Declaring functions */
 void* counting(void *);
@@ -15,11 +16,8 @@ int main(void) {
   pthread_t tid[NUMTHREADS];
   int i = 0;
 
-  /* mutex init */
-  if (pthread_mutex_init(&lock, NULL) != 0) {
-    printf("\n mutex init failed\n");
-    return 1;
-  }
+  /* semaphore init */
+  sem_init(&sem, 0, 1);
 
   for (i = 0; i < NUMTHREADS; i++) {
     pthread_create(&tid[i], NULL, &counting, NULL);
@@ -29,8 +27,8 @@ int main(void) {
     pthread_join(tid[i], NULL);
   }
 
-  /* mutex destroy */
-  pthread_mutex_destroy(&lock);
+  /* semaphore  destroy */
+  sem_destroy(&sem);
 
   printf("\nCounter must be in: %d\n", MAXCNT * NUMTHREADS);
   printf("\nCounter value is: %.0f\n\n", counter);
@@ -40,12 +38,13 @@ int main(void) {
 void* counting(void *unused) {
   int i = 0;
 
-  pthread_mutex_lock(&lock);
+  sem_wait(&sem);
+
   for (i = 0; i < MAXCNT; i++) {
     counter++;
   }
 
-  pthread_mutex_unlock(&lock);
-  
+  sem_post(&sem);
+
   return NULL;
 }
