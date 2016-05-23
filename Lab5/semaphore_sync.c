@@ -33,13 +33,13 @@ int main() {
 
 void *s1(void *arg) {
   printf("\nS1 Executing...\n");
-  sem_post(&synch);
+  sem_post(&synch); // Aumenta en 1 para que el otro proceso siga
   return 0;
 }
 
 void *s2(void *arg) {
   //printf("\nS2 Waiting...\n");
-  sem_wait(&synch);
+  sem_wait(&synch); // Manda a dormir porque la inicialización está en cero
   printf("\nS2 Executing...\n");
 
   return 0;
